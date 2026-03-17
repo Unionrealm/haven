@@ -1,3 +1,7 @@
+'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { EventCard } from '@/components/events/event-card'
@@ -5,7 +9,15 @@ import { mockEvents } from '@/lib/mock-data'
 import { ArrowRight, Zap, Shield, QrCode } from 'lucide-react'
 
 export default function HomePage() {
+  const router = useRouter()
   const featuredEvents = mockEvents.filter((e) => e.status === 'published').slice(0, 3)
+
+  // Redirect mobile users to the event feed
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      router.replace('/events')
+    }
+  }, [router])
 
   return (
     <div className="flex flex-col">
@@ -13,8 +25,12 @@ export default function HomePage() {
       <section className="border-b border-[var(--border-1)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-24 md:py-36">
           <div className="max-w-2xl">
+            {/* Live indicator with pulse animation */}
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-[var(--border-1)] bg-[var(--bg-2)] text-xs font-medium text-[var(--text-2)] mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-3)]" />
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              </span>
               서울에서 지금 열리는 이벤트
             </div>
 
@@ -46,7 +62,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why Haven — icons use text-3 (neutral), NOT accent */}
+      {/* Why Haven */}
       <section className="border-b border-[var(--border-1)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -91,9 +107,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-20">
           <div className="flex items-end justify-between mb-10">
             <div>
-              {/* Section label: text-3, NOT accent */}
               <p className="text-xs text-[var(--text-3)] font-medium uppercase tracking-widest mb-2">지금 뜨는 공연</p>
-              {/* Section heading: text-1, NOT accent */}
               <h2 className="text-2xl font-semibold text-[var(--text-1)] tracking-tight">주목할 이벤트</h2>
             </div>
             <Link href="/events">

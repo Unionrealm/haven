@@ -8,21 +8,20 @@ import { formatDateShort, formatPrice, cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
-  Plus, Ticket, Users, TrendingUp, BarChart3,
-  ExternalLink, QrCode, Download, Eye, Edit, Copy,
+  Plus, Ticket, TrendingUp,
+  ExternalLink, QrCode, Download, Eye, Edit, Copy, Users,
 } from 'lucide-react'
 
 export function DashboardClient() {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(mockEvents[0])
-  const events = mockEvents
+  // Show only the one real event
+  const events = mockEvents.filter((e) => e.id === 'evt-1')
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(events[0])
 
   const stats = {
     totalRevenue: mockTickets
       .filter((t) => t.payment_status === 'paid')
       .reduce((sum, t) => sum + t.purchase_price, 0),
     totalTicketsSold: mockTickets.filter((t) => t.payment_status === 'paid').length,
-    totalEvents: events.length,
-    upcomingEvents: events.filter((e) => new Date(e.date) > new Date()).length,
   }
 
   const eventTickets = mockTickets.filter((t) => t.event_id === selectedEvent?.id)
@@ -50,8 +49,6 @@ export function DashboardClient() {
   const statCards = [
     { label: '총 수익', value: formatPrice(stats.totalRevenue), sub: '수수료 제외 전', icon: TrendingUp },
     { label: '판매 티켓', value: `${stats.totalTicketsSold}매`, sub: '전체 이벤트', icon: Ticket },
-    { label: '이벤트', value: `${stats.totalEvents}개`, sub: '전체', icon: BarChart3 },
-    { label: '예정 이벤트', value: `${stats.upcomingEvents}개`, sub: '진행 예정', icon: Users },
   ]
 
   return (
@@ -70,8 +67,8 @@ export function DashboardClient() {
         </Link>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
+      {/* Stats — only revenue + tickets sold */}
+      <div className="grid grid-cols-2 gap-3 mb-10 max-w-sm">
         {statCards.map(({ label, value, sub, icon: Icon }) => (
           <div key={label} className="rounded-xl border border-[var(--border-1)] bg-[var(--bg-3)] p-5">
             <div className="flex items-center justify-between mb-4">
