@@ -1,38 +1,31 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-  --card: #ffffff;
-  --card-foreground: #0a0a0a;
-  --muted: #f4f4f5;
-  --muted-foreground: #71717a;
-  --border: #e4e4e7;
-  --input: #e4e4e7;
-  --primary: #0a0a0a;
-  --primary-foreground: #fafafa;
-  --accent: #f4f4f5;
-  --accent-foreground: #0a0a0a;
+  /* Haven Design System — Always Dark */
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --card: #161616;
+  --card-foreground: #ffffff;
+  --muted: #111111;
+  --muted-foreground: #888888;
+  --border: #1e1e1e;
+  --input: #111111;
+  --primary: #5A42F5;
+  --primary-foreground: #ffffff;
+  --accent: #161616;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
-  --ring: #0a0a0a;
-  --radius: 0.5rem;
-}
+  --ring: #5A42F5;
+  --radius: 0.75rem;
 
-.dark {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --card: #09090b;
-  --card-foreground: #fafafa;
-  --muted: #18181b;
-  --muted-foreground: #a1a1aa;
-  --border: #27272a;
-  --input: #27272a;
-  --primary: #fafafa;
-  --primary-foreground: #0a0a0a;
-  --accent: #18181b;
-  --accent-foreground: #fafafa;
-  --destructive: #ef4444;
-  --ring: #d4d4d8;
+  /* Haven Extended Palette */
+  --haven-50: #EEE9FF;
+  --haven-200: #C4B5FD;
+  --haven-400: #6B55F7;
+  --haven-500: #5A42F5;
+  --haven-600: #3D2DB8;
+  --haven-700: #2A1E8A;
+  --haven-tint: #110D2E;
 }
 
 @theme inline {
@@ -47,13 +40,15 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -61,41 +56,45 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: #1e1e1e;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-foreground);
+  background: #333;
 }
 
 .haven-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
 }
 
 .prose-haven p {
   margin-bottom: 1rem;
   line-height: 1.75;
+  color: #888888;
 }
 
 .prose-haven strong {
   font-weight: 600;
+  color: #ffffff;
 }
 
-.prose-haven ul, .prose-haven ol {
+.prose-haven ul,
+.prose-haven ol {
   padding-left: 1.5rem;
   margin-bottom: 1rem;
 }
 
 .prose-haven li {
   margin-bottom: 0.25rem;
+  color: #888888;
 }
 
 .event-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
 .event-card:hover {
@@ -107,7 +106,7 @@ body {
     90deg,
     transparent,
     transparent 8px,
-    var(--border) 8px,
-    var(--border) 12px
+    #1e1e1e 8px,
+    #1e1e1e 12px
   );
 }

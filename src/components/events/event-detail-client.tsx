@@ -14,9 +14,9 @@ import {
   Users,
   Share2,
   ExternalLink,
-  Clock,
   ArrowLeft,
   Edit,
+  Clock,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -53,17 +53,17 @@ export function EventDetailClient({ event, isPreview }: Props) {
     <>
       {/* Preview banner */}
       {isPreview && (
-        <div className="bg-amber-500 text-black px-4 py-2 text-center text-sm font-medium">
+        <div className="bg-[#5A42F5] text-white px-4 py-2.5 text-center text-xs font-medium">
           미리보기 모드 — 실제 공개 전 페이지입니다
-          <Link href="/dashboard" className="ml-3 underline">
+          <Link href="/dashboard" className="ml-3 underline underline-offset-2 opacity-80 hover:opacity-100">
             대시보드로 이동
           </Link>
         </div>
       )}
 
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-[#0a0a0a]">
         {/* Hero */}
-        <div className="relative w-full aspect-[21/9] max-h-[480px] bg-[var(--muted)]">
+        <div className="relative w-full aspect-[21/9] max-h-[500px] bg-[#111111]">
           {event.cover_image ? (
             <Image
               src={event.cover_image}
@@ -74,35 +74,43 @@ export function EventDetailClient({ event, isPreview }: Props) {
               sizes="100vw"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-zinc-900 to-zinc-800 flex items-center justify-center">
-              <span className="text-6xl">🎵</span>
+            <div className="absolute inset-0 bg-[#111111] flex items-center justify-center">
+              <div className="w-20 h-20 rounded-2xl bg-[#161616] border border-[#1e1e1e] flex items-center justify-center">
+                <span className="text-[#5A42F5] text-4xl">♪</span>
+              </div>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-transparent to-transparent" />
+          {/* Bottom fade */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-80" />
 
-          {/* Back button */}
+          {/* Navigation buttons */}
           <div className="absolute top-4 left-4">
             <Link href="/events">
-              <Button variant="secondary" size="sm" className="backdrop-blur-sm bg-black/40 text-white border-0 hover:bg-black/60">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="backdrop-blur-md bg-black/50 text-white border border-white/10 hover:bg-black/70"
+              >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 목록
               </Button>
             </Link>
           </div>
 
-          {/* Share + Edit buttons */}
           <div className="absolute top-4 right-4 flex gap-2">
-            <Button
-              variant="secondary"
-              size="icon"
+            <button
               onClick={handleShare}
-              className="backdrop-blur-sm bg-black/40 text-white border-0 hover:bg-black/60"
+              className="h-9 w-9 rounded-lg backdrop-blur-md bg-black/50 border border-white/10 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
             >
               <Share2 className="h-4 w-4" />
-            </Button>
+            </button>
             {isPreview && (
               <Link href="/events/create">
-                <Button variant="secondary" size="sm" className="backdrop-blur-sm bg-black/40 text-white border-0 hover:bg-black/60">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="backdrop-blur-md bg-black/50 text-white border border-white/10 hover:bg-black/70"
+                >
                   <Edit className="h-3.5 w-3.5" />
                   수정
                 </Button>
@@ -112,29 +120,30 @@ export function EventDetailClient({ event, isPreview }: Props) {
         </div>
 
         {/* Content */}
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* Main content */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-10">
               {/* Title & meta */}
               <div>
-                <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <Badge variant="secondary">{event.category}</Badge>
+                <div className="flex flex-wrap items-center gap-2 mb-4">
+                  <Badge variant="default">{event.category}</Badge>
                   <Badge variant="secondary">{event.location}</Badge>
                   {isSoldOut && <Badge variant="destructive">매진</Badge>}
                 </div>
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 leading-tight">
+
+                <h1 className="text-2xl md:text-3xl font-semibold text-white tracking-tight mb-6 leading-tight">
                   {event.title}
                 </h1>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--muted)] flex items-center justify-center shrink-0">
-                      <Calendar className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    <div className="w-9 h-9 rounded-lg bg-[#161616] border border-[#1e1e1e] flex items-center justify-center shrink-0">
+                      <Calendar className="h-4 w-4 text-[#5A42F5]" />
                     </div>
                     <div>
-                      <p className="font-medium">{formatDateShort(event.date)}</p>
-                      <p className="text-[var(--muted-foreground)]">
+                      <p className="font-medium text-white">{formatDateShort(event.date)}</p>
+                      <p className="text-[#888888] text-xs mt-0.5">
                         {formatTime(event.date)}
                         {event.end_date && ` — ${formatTime(event.end_date)}`}
                       </p>
@@ -142,22 +151,22 @@ export function EventDetailClient({ event, isPreview }: Props) {
                   </div>
 
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--muted)] flex items-center justify-center shrink-0">
-                      <MapPin className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    <div className="w-9 h-9 rounded-lg bg-[#161616] border border-[#1e1e1e] flex items-center justify-center shrink-0">
+                      <MapPin className="h-4 w-4 text-[#5A42F5]" />
                     </div>
                     <div>
-                      <p className="font-medium">{event.venue}</p>
-                      <p className="text-[var(--muted-foreground)]">{event.address || event.location}</p>
+                      <p className="font-medium text-white">{event.venue}</p>
+                      <p className="text-[#888888] text-xs mt-0.5">{event.address || event.location}</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 text-sm">
-                    <div className="w-8 h-8 rounded-lg bg-[var(--muted)] flex items-center justify-center shrink-0">
-                      <Users className="h-4 w-4 text-[var(--muted-foreground)]" />
+                    <div className="w-9 h-9 rounded-lg bg-[#161616] border border-[#1e1e1e] flex items-center justify-center shrink-0">
+                      <Users className="h-4 w-4 text-[#5A42F5]" />
                     </div>
                     <div>
-                      <p className="font-medium">{totalSold}명 참가 예정</p>
-                      <p className="text-[var(--muted-foreground)]">총 {totalQuantity}석</p>
+                      <p className="font-medium text-white">{totalSold}명 참가 예정</p>
+                      <p className="text-[#888888] text-xs mt-0.5">총 {totalQuantity}석</p>
                     </div>
                   </div>
                 </div>
@@ -165,28 +174,28 @@ export function EventDetailClient({ event, isPreview }: Props) {
 
               {/* Description */}
               <div>
-                <h2 className="text-lg font-semibold mb-3">이벤트 소개</h2>
+                <h2 className="text-base font-semibold text-white mb-4">이벤트 소개</h2>
                 <div
-                  className="prose-haven text-sm leading-relaxed text-[var(--muted-foreground)]"
+                  className="prose-haven text-sm leading-relaxed"
                   dangerouslySetInnerHTML={{ __html: event.description }}
                 />
               </div>
 
-              {/* Map placeholder */}
+              {/* Venue */}
               <div>
-                <h2 className="text-lg font-semibold mb-3">오시는 길</h2>
-                <div className="rounded-xl overflow-hidden border border-[var(--border)]">
-                  <div className="bg-[var(--muted)] h-48 flex items-center justify-center">
-                    <div className="text-center text-[var(--muted-foreground)]">
-                      <MapPin className="h-8 w-8 mx-auto mb-2 opacity-40" />
-                      <p className="text-sm font-medium">{event.venue}</p>
+                <h2 className="text-base font-semibold text-white mb-4">오시는 길</h2>
+                <div className="rounded-xl overflow-hidden border border-[#1e1e1e]">
+                  <div className="bg-[#111111] h-44 flex items-center justify-center">
+                    <div className="text-center text-[#888888]">
+                      <MapPin className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                      <p className="text-sm font-medium text-white">{event.venue}</p>
                       <p className="text-xs mt-1">{event.address || event.location}</p>
                     </div>
                   </div>
-                  <div className="p-3 flex items-center justify-between bg-[var(--card)] border-t border-[var(--border)]">
-                    <span className="text-sm text-[var(--muted-foreground)]">{event.address || event.location}</span>
-                    <button className="flex items-center gap-1 text-xs text-[var(--foreground)] font-medium hover:opacity-70 transition-opacity">
-                      카카오맵으로 보기
+                  <div className="p-3 flex items-center justify-between bg-[#161616] border-t border-[#1e1e1e]">
+                    <span className="text-xs text-[#888888] truncate">{event.address || event.location}</span>
+                    <button className="flex items-center gap-1 text-xs text-[#5A42F5] font-medium hover:text-[#6B55F7] transition-colors shrink-0 ml-3">
+                      카카오맵
                       <ExternalLink className="h-3 w-3" />
                     </button>
                   </div>
@@ -196,53 +205,64 @@ export function EventDetailClient({ event, isPreview }: Props) {
 
             {/* Sidebar: Ticket purchase */}
             <div className="lg:col-span-1">
-              <div className="sticky top-20">
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] overflow-hidden">
-                  <div className="p-5 border-b border-[var(--border)]">
-                    <p className="text-xs text-[var(--muted-foreground)] mb-1">티켓</p>
-                    <p className="text-2xl font-bold">
-                      {formatPrice(minPrice)}
+              <div className="sticky top-20 space-y-4">
+                <div className="rounded-xl border border-[#1e1e1e] bg-[#161616] overflow-hidden">
+                  {/* Price header */}
+                  <div className="p-5 border-b border-[#1e1e1e]">
+                    <p className="text-xs text-[#888888] mb-1">티켓 가격</p>
+                    <p className="text-2xl font-semibold text-white">
+                      {minPrice === 0 ? '무료' : formatPrice(minPrice)}
                       {event.ticket_types && event.ticket_types.length > 1 && minPrice > 0 && (
-                        <span className="text-sm font-normal text-[var(--muted-foreground)]"> 부터</span>
+                        <span className="text-sm font-normal text-[#888888]"> 부터</span>
                       )}
                     </p>
                   </div>
 
                   {/* Ticket types */}
-                  <div className="p-5 space-y-3">
+                  <div className="p-4 space-y-2">
                     {event.ticket_types?.map((tt) => {
                       const isAvailable = tt.quantity_sold < tt.quantity
+                      const remaining = tt.quantity - tt.quantity_sold
+                      const isPreSale = tt.name.includes('사전') || tt.name.includes('얼리')
                       return (
-                        <div
+                        <button
                           key={tt.id}
-                          className={cn(
-                            'flex items-center justify-between py-3 px-4 rounded-lg border transition-colors',
-                            isAvailable
-                              ? 'border-[var(--border)] hover:border-[var(--foreground)] cursor-pointer'
-                              : 'border-[var(--border)] opacity-50'
-                          )}
+                          disabled={!isAvailable}
                           onClick={() => isAvailable && handleBuyTicket(tt.id)}
+                          className={cn(
+                            'w-full text-left px-4 py-3.5 rounded-lg border transition-all',
+                            isAvailable
+                              ? 'border-[#1e1e1e] hover:border-[#5A42F5] hover:bg-[#110D2E] cursor-pointer'
+                              : 'border-[#1e1e1e] opacity-40 cursor-not-allowed'
+                          )}
                         >
-                          <div>
-                            <p className="text-sm font-medium">{tt.name}</p>
-                            {tt.description && (
-                              <p className="text-xs text-[var(--muted-foreground)] mt-0.5">{tt.description}</p>
-                            )}
-                            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
-                              {isAvailable
-                                ? `${tt.quantity - tt.quantity_sold}석 남음`
-                                : '매진'}
-                            </p>
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <p className="text-sm font-medium text-white">{tt.name}</p>
+                                {isPreSale && isAvailable && (
+                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#2A1E8A] text-[#C4B5FD] font-medium">
+                                    사전예매
+                                  </span>
+                                )}
+                              </div>
+                              {tt.description && (
+                                <p className="text-xs text-[#888888] mt-0.5 leading-relaxed">{tt.description}</p>
+                              )}
+                              <p className="text-xs text-[#444444] mt-1">
+                                {isAvailable ? `${remaining}석 남음` : '매진'}
+                              </p>
+                            </div>
+                            <span className="text-sm font-semibold text-[#5A42F5] shrink-0">
+                              {tt.price === 0 ? '무료' : formatPrice(tt.price)}
+                            </span>
                           </div>
-                          <span className="text-sm font-semibold">
-                            {formatPrice(tt.price)}
-                          </span>
-                        </div>
+                        </button>
                       )
                     })}
                   </div>
 
-                  <div className="px-5 pb-5">
+                  <div className="px-4 pb-5">
                     <Button
                       className="w-full"
                       size="lg"
@@ -251,7 +271,7 @@ export function EventDetailClient({ event, isPreview }: Props) {
                     >
                       {isSoldOut ? '매진되었습니다' : '티켓 구매하기'}
                     </Button>
-                    <p className="text-xs text-[var(--muted-foreground)] text-center mt-3">
+                    <p className="text-xs text-[#444444] text-center mt-3">
                       회원가입 없이 구매 가능합니다
                     </p>
                   </div>
@@ -259,13 +279,13 @@ export function EventDetailClient({ event, isPreview }: Props) {
 
                 {/* Organizer */}
                 {event.organizer && (
-                  <div className="mt-4 p-4 rounded-xl border border-[var(--border)]">
-                    <p className="text-xs text-[var(--muted-foreground)] mb-2">주최자</p>
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-[var(--muted)] flex items-center justify-center text-sm font-medium">
+                  <div className="p-4 rounded-xl border border-[#1e1e1e] bg-[#161616]">
+                    <p className="text-xs text-[#888888] mb-3">주최자</p>
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-[#2A1E8A] flex items-center justify-center text-sm font-semibold text-[#C4B5FD]">
                         {event.organizer.name[0]}
                       </div>
-                      <span className="text-sm font-medium">{event.organizer.name}</span>
+                      <span className="text-sm font-medium text-white">{event.organizer.name}</span>
                     </div>
                   </div>
                 )}
@@ -275,7 +295,6 @@ export function EventDetailClient({ event, isPreview }: Props) {
         </div>
       </div>
 
-      {/* Ticket purchase modal */}
       {purchaseModalOpen && (
         <TicketPurchaseModal
           event={event}

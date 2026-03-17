@@ -24,8 +24,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ko" suppressHydrationWarning>
-      <body className="antialiased min-h-screen flex flex-col">
+    <html lang="ko" className="dark" suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col bg-[#0a0a0a] text-white">
         <Navbar />
         <main className="flex-1">
           {children}

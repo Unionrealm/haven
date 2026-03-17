@@ -8,7 +8,7 @@ import { Event, TicketType } from '@/lib/supabase/types'
 import { formatPrice, generateQRData, cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { X, ChevronRight, ChevronLeft, Check, Download } from 'lucide-react'
+import { X, ChevronRight, ChevronLeft, Check } from 'lucide-react'
 import { QRTicket } from './qr-ticket'
 import { toast } from 'sonner'
 
@@ -25,7 +25,6 @@ const purchaseSchema = z.object({
 })
 
 type PurchaseFormValues = z.infer<typeof purchaseSchema>
-
 type Step = 'select' | 'info' | 'payment' | 'complete'
 
 export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Props) {
@@ -39,11 +38,7 @@ export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Pro
 
   const form = useForm<PurchaseFormValues>({
     resolver: zodResolver(purchaseSchema),
-    defaultValues: {
-      attendee_name: '',
-      attendee_phone: '',
-      attendee_email: '',
-    },
+    defaultValues: { attendee_name: '', attendee_phone: '', attendee_email: '' },
   })
 
   const totalPrice = (selectedTicketType?.price ?? 0) * quantity
@@ -61,8 +56,6 @@ export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Pro
     setIsProcessing(true)
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      // Generate QR codes for each ticket
       const tickets = Array.from({ length: quantity }, (_, i) => {
         const ticketId = `tkt-${Date.now()}-${i}`
         return generateQRData({
@@ -86,37 +79,39 @@ export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Pro
     await processTickets(data)
   }
 
+  const stepLabel = {
+    select: '티켓 선택',
+    info: '참가자 정보',
+    payment: '결제',
+    complete: '구매 완료',
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Modal */}
-      <div className="relative w-full sm:max-w-md bg-[var(--background)] rounded-t-2xl sm:rounded-2xl border border-[var(--border)] max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full sm:max-w-md bg-[#111111] rounded-t-2xl sm:rounded-2xl border border-[#1e1e1e] max-h-[92vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[var(--border)] sticky top-0 bg-[var(--background)] z-10">
+        <div className="flex items-center justify-between p-5 border-b border-[#1e1e1e] sticky top-0 bg-[#111111] z-10">
           <div className="flex items-center gap-3">
             {step !== 'select' && step !== 'complete' && (
               <button
                 onClick={() => setStep(step === 'payment' ? 'info' : 'select')}
-                className="text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                className="text-[#888888] hover:text-white transition-colors"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
             )}
-            <h2 className="font-semibold text-sm">
-              {step === 'select' && '티켓 선택'}
-              {step === 'info' && '참가자 정보'}
-              {step === 'payment' && '결제'}
-              {step === 'complete' && '구매 완료'}
-            </h2>
+            <h2 className="font-semibold text-sm text-white">{stepLabel[step]}</h2>
           </div>
           <button
             onClick={onClose}
-            className="text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+            className="text-[#888888] hover:text-white transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -126,80 +121,85 @@ export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Pro
           {/* Step: Select ticket */}
           {step === 'select' && (
             <div className="space-y-4">
-              <p className="text-sm text-[var(--muted-foreground)]">티켓 종류를 선택하세요</p>
+              <p className="text-sm text-[#888888]">티켓 종류를 선택하세요</p>
 
               <div className="space-y-2">
                 {event.ticket_types?.map((tt) => {
                   const isAvailable = tt.quantity_sold < tt.quantity
                   const isSelected = selectedTicketType?.id === tt.id
+                  const remaining = tt.quantity - tt.quantity_sold
                   return (
                     <button
                       key={tt.id}
                       disabled={!isAvailable}
                       onClick={() => setSelectedTicketType(tt)}
                       className={cn(
-                        'w-full text-left px-4 py-3 rounded-lg border transition-all',
+                        'w-full text-left px-4 py-4 rounded-xl border transition-all',
                         isSelected
-                          ? 'border-[var(--primary)] bg-[var(--muted)]'
-                          : 'border-[var(--border)] hover:border-[var(--foreground)]',
-                        !isAvailable && 'opacity-50 cursor-not-allowed'
+                          ? 'border-[#5A42F5] bg-[#110D2E]'
+                          : 'border-[#1e1e1e] bg-[#161616] hover:border-[#333]',
+                        !isAvailable && 'opacity-40 cursor-not-allowed'
                       )}
                     >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium">{tt.name}</p>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <p className="text-sm font-medium text-white">{tt.name}</p>
+                            {isSelected && <Check className="h-3.5 w-3.5 text-[#5A42F5]" />}
+                          </div>
                           {tt.description && (
-                            <p className="text-xs text-[var(--muted-foreground)] mt-0.5">{tt.description}</p>
+                            <p className="text-xs text-[#888888] mt-0.5">{tt.description}</p>
                           )}
-                          <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
-                            {isAvailable ? `${tt.quantity - tt.quantity_sold}석 남음` : '매진'}
+                          <p className="text-xs text-[#444444] mt-1">
+                            {isAvailable ? `${remaining}석 남음` : '매진'}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold">{formatPrice(tt.price)}</span>
-                          {isSelected && <Check className="h-4 w-4 text-[var(--foreground)]" />}
-                        </div>
+                        <span className="text-sm font-semibold text-[#5A42F5] shrink-0">
+                          {tt.price === 0 ? '무료' : formatPrice(tt.price)}
+                        </span>
                       </div>
                     </button>
                   )
                 })}
               </div>
 
-              {/* Quantity */}
+              {/* Quantity selector */}
               {selectedTicketType && (
-                <div className="flex items-center justify-between py-3 border-t border-[var(--border)]">
-                  <span className="text-sm font-medium">수량</span>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                      className="w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center text-sm hover:bg-[var(--muted)] transition-colors"
-                    >
-                      −
-                    </button>
-                    <span className="text-sm font-medium w-4 text-center">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity((q) => Math.min(
-                        selectedTicketType.quantity - selectedTicketType.quantity_sold, q + 1
-                      ))}
-                      className="w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center text-sm hover:bg-[var(--muted)] transition-colors"
-                    >
-                      +
-                    </button>
+                <>
+                  <div className="flex items-center justify-between py-3 border-t border-[#1e1e1e]">
+                    <span className="text-sm font-medium text-white">수량</span>
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        className="w-8 h-8 rounded-lg border border-[#1e1e1e] flex items-center justify-center text-sm text-white hover:bg-[#161616] transition-colors"
+                      >
+                        −
+                      </button>
+                      <span className="text-sm font-semibold text-white w-4 text-center">{quantity}</span>
+                      <button
+                        onClick={() => setQuantity((q) => Math.min(
+                          selectedTicketType.quantity - selectedTicketType.quantity_sold, q + 1
+                        ))}
+                        className="w-8 h-8 rounded-lg border border-[#1e1e1e] flex items-center justify-center text-sm text-white hover:bg-[#161616] transition-colors"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
-                </div>
-              )}
 
-              {selectedTicketType && (
-                <div className="pt-2">
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm text-[var(--muted-foreground)]">합계</span>
-                    <span className="font-bold">{formatPrice(totalPrice)}</span>
+                  <div>
+                    <div className="flex items-center justify-between mb-4 py-3 border-t border-[#1e1e1e]">
+                      <span className="text-sm text-[#888888]">합계</span>
+                      <span className="font-semibold text-white text-lg">
+                        {totalPrice === 0 ? '무료' : formatPrice(totalPrice)}
+                      </span>
+                    </div>
+                    <Button className="w-full" size="lg" onClick={() => setStep('info')}>
+                      계속하기
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
                   </div>
-                  <Button className="w-full" onClick={() => setStep('info')}>
-                    계속하기
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </div>
+                </>
               )}
             </div>
           )}
@@ -207,16 +207,19 @@ export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Pro
           {/* Step: Attendee info */}
           {step === 'info' && (
             <form onSubmit={form.handleSubmit(handleInfoSubmit)} className="space-y-4">
-              <div className="bg-[var(--muted)] rounded-lg p-3 text-xs text-[var(--muted-foreground)]">
-                <span className="font-medium text-[var(--foreground)]">{selectedTicketType?.name}</span>
-                {' · '}{quantity}매{' · '}
-                <span className="font-medium text-[var(--foreground)]">{formatPrice(totalPrice)}</span>
+              <div className="bg-[#161616] rounded-xl border border-[#1e1e1e] p-3 text-xs">
+                <span className="font-medium text-white">{selectedTicketType?.name}</span>
+                <span className="text-[#888888]"> · {quantity}매 · </span>
+                <span className="font-medium text-[#5A42F5]">
+                  {totalPrice === 0 ? '무료' : formatPrice(totalPrice)}
+                </span>
               </div>
 
               <Input
                 label="이름 *"
                 placeholder="홍길동"
                 error={form.formState.errors.attendee_name?.message}
+                className="bg-[#161616] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
                 {...form.register('attendee_name')}
               />
               <Input
@@ -225,6 +228,7 @@ export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Pro
                 placeholder="010-0000-0000"
                 hint="QR 티켓 확인에 사용됩니다"
                 error={form.formState.errors.attendee_phone?.message}
+                className="bg-[#161616] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
                 {...form.register('attendee_phone')}
               />
               <Input
@@ -233,48 +237,59 @@ export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Pro
                 placeholder="example@email.com"
                 hint="선택 사항 — 티켓 이메일 발송 시 사용"
                 error={form.formState.errors.attendee_email?.message}
+                className="bg-[#161616] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
                 {...form.register('attendee_email')}
               />
 
-              <Button type="submit" className="w-full" loading={isProcessing}>
-                {isFree ? '무료 신청하기' : `₩${totalPrice.toLocaleString()} 결제하기`}
+              <Button type="submit" className="w-full" size="lg" loading={isProcessing}>
+                {isFree ? '무료 신청하기' : `${formatPrice(totalPrice)} 결제하기`}
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </form>
           )}
 
-          {/* Step: Payment (mock Toss Payments) */}
+          {/* Step: Payment */}
           {step === 'payment' && (
             <div className="space-y-4">
-              <div className="bg-[var(--muted)] rounded-lg p-3 text-xs text-[var(--muted-foreground)]">
-                <span className="font-medium text-[var(--foreground)]">{selectedTicketType?.name}</span>
-                {' · '}{quantity}매{' · '}
-                <span className="font-medium text-[var(--foreground)]">{formatPrice(totalPrice)}</span>
+              <div className="bg-[#161616] rounded-xl border border-[#1e1e1e] p-3 text-xs">
+                <span className="font-medium text-white">{selectedTicketType?.name}</span>
+                <span className="text-[#888888]"> · {quantity}매 · </span>
+                <span className="font-medium text-[#5A42F5]">{formatPrice(totalPrice)}</span>
               </div>
 
-              {/* Mock payment UI */}
-              <div className="border border-[var(--border)] rounded-xl overflow-hidden">
-                <div className="bg-[var(--muted)] px-4 py-3 border-b border-[var(--border)]">
-                  <p className="text-xs font-medium text-[var(--muted-foreground)]">결제 방법 선택</p>
+              {/* Payment methods */}
+              <div className="rounded-xl border border-[#1e1e1e] overflow-hidden">
+                <div className="bg-[#161616] px-4 py-3 border-b border-[#1e1e1e]">
+                  <p className="text-xs font-medium text-[#888888]">결제 방법 선택</p>
                 </div>
-                <div className="p-4 space-y-2">
+                <div className="p-3 space-y-2">
                   {['신용/체크카드', '카카오페이', '네이버페이', '토스'].map((method) => (
-                    <label key={method} className="flex items-center gap-3 p-3 rounded-lg border border-[var(--border)] cursor-pointer hover:bg-[var(--muted)] transition-colors">
-                      <input type="radio" name="payment" className="accent-[var(--foreground)]" defaultChecked={method === '신용/체크카드'} />
-                      <span className="text-sm">{method}</span>
+                    <label
+                      key={method}
+                      className="flex items-center gap-3 p-3 rounded-lg border border-[#1e1e1e] cursor-pointer hover:bg-[#161616] transition-colors"
+                    >
+                      <input
+                        type="radio"
+                        name="payment"
+                        className="accent-[#5A42F5]"
+                        defaultChecked={method === '신용/체크카드'}
+                      />
+                      <span className="text-sm text-white">{method}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
-              <div className="text-xs text-[var(--muted-foreground)] bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+              <div className="text-xs text-[#888888] bg-[#161616] border border-[#1e1e1e] rounded-xl p-3">
                 ⚡ 데모 모드: 실제 결제가 진행되지 않습니다
               </div>
 
-              <div className="border-t border-[var(--border)] pt-4">
+              <div className="border-t border-[#1e1e1e] pt-4">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm">결제 금액</span>
-                  <span className="font-bold text-lg">₩{totalPrice.toLocaleString()}</span>
+                  <span className="text-sm text-[#888888]">결제 금액</span>
+                  <span className="font-semibold text-lg text-white">
+                    ₩{totalPrice.toLocaleString()}
+                  </span>
                 </div>
                 <Button className="w-full" size="lg" onClick={handleMockPayment} loading={isProcessing}>
                   결제하기
@@ -283,22 +298,21 @@ export function TicketPurchaseModal({ event, initialTicketTypeId, onClose }: Pro
             </div>
           )}
 
-          {/* Step: Complete - Show QR ticket */}
+          {/* Step: Complete */}
           {step === 'complete' && (
             <div className="space-y-5">
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-3">
-                  <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
+              <div className="text-center py-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#0d2818] border border-green-900 flex items-center justify-center mx-auto mb-4">
+                  <Check className="h-7 w-7 text-green-400" />
                 </div>
-                <h3 className="font-semibold mb-1">
+                <h3 className="font-semibold text-white mb-1">
                   {isFree ? '신청 완료!' : '결제 완료!'}
                 </h3>
-                <p className="text-sm text-[var(--muted-foreground)]">
+                <p className="text-sm text-[#888888]">
                   QR 티켓을 스크린샷으로 저장하세요
                 </p>
               </div>
 
-              {/* QR Tickets */}
               {generatedTickets.map((qrData, i) => (
                 <QRTicket
                   key={i}
