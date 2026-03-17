@@ -14,23 +14,29 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5A42F5] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] disabled:opacity-40 disabled:cursor-not-allowed select-none',
+          'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-1)]',
+          'disabled:opacity-40 disabled:cursor-not-allowed select-none',
           {
-            'bg-[#5A42F5] text-white hover:bg-[#6B55F7] active:bg-[#3D2DB8]':
+            /* Primary — the ONE place accent bg is used */
+            'bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] active:bg-[var(--accent-active)]':
               variant === 'default',
-            'bg-[#161616] text-[#888888] hover:bg-[#1e1e1e] hover:text-white border border-[#1e1e1e]':
+            /* Secondary — neutral surface */
+            'bg-[var(--bg-3)] text-[var(--text-2)] hover:bg-[var(--bg-4)] hover:text-[var(--text-1)] border border-[var(--border-1)]':
               variant === 'secondary',
-            'border border-[#1e1e1e] bg-transparent text-white hover:bg-[#161616] hover:border-[#333]':
+            /* Outline — just a border */
+            'border border-[var(--border-2)] bg-transparent text-[var(--text-1)] hover:bg-[var(--bg-3)]':
               variant === 'outline',
-            'border border-[#5A42F5] text-[#5A42F5] bg-transparent hover:bg-[#110D2E]':
+            /* Ghost — accent border, no fill */
+            'border border-[var(--accent)] text-[var(--accent)] bg-transparent hover:bg-[var(--accent-subtle)]':
               variant === 'ghost',
             'bg-red-500 text-white hover:bg-red-600':
               variant === 'destructive',
-            'bg-transparent underline-offset-4 hover:underline p-0 h-auto text-[#888888] hover:text-white':
+            'bg-transparent underline-offset-4 hover:underline p-0 h-auto text-[var(--text-2)] hover:text-[var(--text-1)]':
               variant === 'link',
           },
           {
-            'h-8 px-3 text-xs': size === 'sm',
+            'h-9 px-3.5 text-xs': size === 'sm',
             'h-10 px-4 text-sm': size === 'md',
             'h-12 px-6 text-sm': size === 'lg',
             'h-10 w-10': size === 'icon',

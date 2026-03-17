@@ -13,7 +13,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={inputId} className="text-sm font-medium text-[var(--foreground)]">
+          <label htmlFor={inputId} className="text-sm font-medium text-[var(--text-1)]">
             {label}
           </label>
         )}
@@ -21,18 +21,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           ref={ref}
           className={cn(
-            'flex h-10 w-full rounded-lg border border-[var(--border)] bg-transparent px-3 py-2 text-sm',
-            'placeholder:text-[var(--muted-foreground)]',
-            'focus:outline-none focus:ring-2 focus:ring-[var(--ring)] focus:ring-offset-0',
+            'flex h-11 w-full rounded-lg border border-[var(--border-1)] bg-[var(--bg-2)] px-3 py-2 text-sm text-[var(--text-1)]',
+            'placeholder:text-[var(--text-3)]',
+            'focus:outline-none focus:border-[var(--accent)] transition-colors',
             'disabled:cursor-not-allowed disabled:opacity-50',
-            'transition-colors',
-            error && 'border-red-500 focus:ring-red-500',
+            error && 'border-red-500 focus:border-red-500',
             className
           )}
           {...props}
         />
         {error && <p className="text-xs text-red-500">{error}</p>}
-        {hint && !error && <p className="text-xs text-[var(--muted-foreground)]">{hint}</p>}
+        {hint && !error && <p className="text-xs text-[var(--text-3)]">{hint}</p>}
       </div>
     )
   }

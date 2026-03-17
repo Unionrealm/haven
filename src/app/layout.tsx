@@ -3,6 +3,7 @@ import './globals.css'
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { Toaster } from 'sonner'
+import { ThemeProvider } from '@/lib/theme'
 
 export const metadata: Metadata = {
   title: {
@@ -24,14 +25,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ko" className="dark" suppressHydrationWarning>
-      <body className="antialiased min-h-screen flex flex-col bg-[#0a0a0a] text-white">
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
-        <Toaster position="bottom-right" richColors />
+    <html lang="ko" suppressHydrationWarning>
+      <body className="antialiased min-h-screen flex flex-col bg-[var(--bg-1)] text-[var(--text-1)]">
+        <ThemeProvider>
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+          <Toaster position="bottom-right" richColors />
+        </ThemeProvider>
       </body>
     </html>
   )

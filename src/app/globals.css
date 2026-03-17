@@ -1,31 +1,78 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────
+   Haven Design Tokens — Dark (default)
+───────────────────────────────────────── */
 :root {
-  /* Haven Design System — Always Dark */
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --card: #161616;
-  --card-foreground: #ffffff;
-  --muted: #111111;
-  --muted-foreground: #888888;
-  --border: #1e1e1e;
-  --input: #111111;
-  --primary: #5A42F5;
+  --bg-1: #0C0B0E;
+  --bg-2: #141318;
+  --bg-3: #1C1B21;
+  --bg-4: #242329;
+
+  --text-1: #F5F4F8;
+  --text-2: #8E8A99;
+  --text-3: #5C5868;
+
+  --border-1: rgba(255, 255, 255, 0.08);
+  --border-2: rgba(255, 255, 255, 0.14);
+
+  --accent: #5A42F5;
+  --accent-hover: #6B55F7;
+  --accent-active: #3D2DB8;
+  --accent-subtle: rgba(90, 66, 245, 0.12);
+
+  /* Legacy aliases — kept for component compatibility */
+  --background: var(--bg-1);
+  --foreground: var(--text-1);
+  --card: var(--bg-3);
+  --card-foreground: var(--text-1);
+  --muted: var(--bg-2);
+  --muted-foreground: var(--text-2);
+  --border: var(--border-1);
+  --input: var(--bg-2);
+  --primary: var(--accent);
   --primary-foreground: #ffffff;
-  --accent: #161616;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --ring: #5A42F5;
+  --ring: var(--accent);
   --radius: 0.75rem;
 
-  /* Haven Extended Palette */
-  --haven-50: #EEE9FF;
-  --haven-200: #C4B5FD;
-  --haven-400: #6B55F7;
-  --haven-500: #5A42F5;
-  --haven-600: #3D2DB8;
-  --haven-700: #2A1E8A;
-  --haven-tint: #110D2E;
+  /* Old palette (for any missed references) */
+  --haven-tint: rgba(90, 66, 245, 0.12);
+}
+
+/* ─────────────────────────────────────────
+   Light mode
+───────────────────────────────────────── */
+.light {
+  --bg-1: #ffffff;
+  --bg-2: #F7F7F8;
+  --bg-3: #F0EFF3;
+  --bg-4: #E8E7ED;
+
+  --text-1: #0D0C10;
+  --text-2: #7A7686;
+  --text-3: #ACA9B8;
+
+  --border-1: rgba(0, 0, 0, 0.07);
+  --border-2: rgba(0, 0, 0, 0.12);
+
+  --accent: #5A42F5;
+  --accent-hover: #6B55F7;
+  --accent-active: #3D2DB8;
+  --accent-subtle: rgba(90, 66, 245, 0.08);
+
+  --background: var(--bg-1);
+  --foreground: var(--text-1);
+  --card: var(--bg-3);
+  --card-foreground: var(--text-1);
+  --muted: var(--bg-2);
+  --muted-foreground: var(--text-2);
+  --border: var(--border-1);
+  --input: var(--bg-2);
+  --primary: var(--accent);
+  --primary-foreground: #ffffff;
+  --ring: var(--accent);
+
+  --haven-tint: rgba(90, 66, 245, 0.08);
 }
 
 @theme inline {
@@ -34,12 +81,12 @@
 }
 
 * {
-  border-color: var(--border);
+  border-color: var(--border-1);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg-1);
+  color: var(--text-1);
   font-family: 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont,
     'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -56,12 +103,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e1e1e;
+  background: var(--bg-4);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #333;
+  background: var(--text-3);
 }
 
 .haven-title {
@@ -74,12 +121,12 @@ body {
 .prose-haven p {
   margin-bottom: 1rem;
   line-height: 1.75;
-  color: #888888;
+  color: var(--text-2);
 }
 
 .prose-haven strong {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-1);
 }
 
 .prose-haven ul,
@@ -90,7 +137,7 @@ body {
 
 .prose-haven li {
   margin-bottom: 0.25rem;
-  color: #888888;
+  color: var(--text-2);
 }
 
 .event-card {
@@ -106,7 +153,7 @@ body {
     90deg,
     transparent,
     transparent 8px,
-    #1e1e1e 8px,
-    #1e1e1e 12px
+    var(--border-1) 8px,
+    var(--border-1) 12px
   );
 }

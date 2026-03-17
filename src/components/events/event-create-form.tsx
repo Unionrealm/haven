@@ -10,7 +10,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { CATEGORIES, LOCATIONS, generateSlug, cn } from '@/lib/utils'
-import { Plus, Trash2, Image as ImageIcon, Calendar, MapPin, Ticket, ChevronRight, ChevronLeft, Check } from 'lucide-react'
+import {
+  Plus, Trash2, Image as ImageIcon, Calendar, MapPin, Ticket,
+  ChevronRight, ChevronLeft, Check,
+} from 'lucide-react'
 import Image from 'next/image'
 
 const ticketTypeSchema = z.object({
@@ -111,21 +114,21 @@ export function EventCreateForm() {
               className={cn(
                 'flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
                 step === s.id
-                  ? 'bg-[#5A42F5] text-white'
+                  ? 'bg-[var(--accent)] text-white'
                   : step > s.id
-                    ? 'text-[#888888] cursor-pointer hover:text-white hover:bg-[#161616]'
-                    : 'text-[#444444] cursor-not-allowed'
+                    ? 'text-[var(--text-2)] cursor-pointer hover:text-[var(--text-1)] hover:bg-[var(--bg-3)]'
+                    : 'text-[var(--text-3)] cursor-not-allowed'
               )}
             >
               {step > s.id ? (
-                <Check className="h-3 w-3 text-[#5A42F5]" />
+                <Check className="h-3 w-3" />
               ) : (
                 <s.icon className="h-3 w-3" />
               )}
               {s.label}
             </button>
             {i < STEPS.length - 1 && (
-              <ChevronRight className="h-3.5 w-3.5 text-[#1e1e1e]" />
+              <ChevronRight className="h-3.5 w-3.5 text-[var(--border-2)]" />
             )}
           </div>
         ))}
@@ -133,13 +136,12 @@ export function EventCreateForm() {
 
       {/* Step 1: Basic Info */}
       {step === 1 && (
-        <div className="rounded-xl border border-[#1e1e1e] bg-[#161616] overflow-hidden">
+        <div className="rounded-xl border border-[var(--border-1)] bg-[var(--bg-3)] overflow-hidden">
           <div className="p-6 space-y-6">
-            {/* Cover image */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-white">커버 이미지</label>
+              <label className="text-sm font-medium text-[var(--text-1)]">커버 이미지</label>
               <div
-                className="relative aspect-[16/7] rounded-lg border-2 border-dashed border-[#1e1e1e] overflow-hidden cursor-pointer hover:border-[#5A42F5] transition-colors group"
+                className="relative aspect-[16/7] rounded-lg border-2 border-dashed border-[var(--border-1)] overflow-hidden cursor-pointer hover:border-[var(--accent)] transition-colors group"
                 onClick={() => {
                   const url = prompt('이미지 URL을 입력하세요 (Unsplash 링크 등):')
                   if (url) {
@@ -156,12 +158,12 @@ export function EventCreateForm() {
                     </div>
                   </>
                 ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#888888]">
-                    <div className="w-10 h-10 rounded-lg bg-[#111111] border border-[#1e1e1e] flex items-center justify-center">
-                      <ImageIcon className="h-5 w-5" />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[var(--text-2)]">
+                    <div className="w-10 h-10 rounded-lg bg-[var(--bg-2)] border border-[var(--border-1)] flex items-center justify-center">
+                      <ImageIcon className="h-5 w-5 text-[var(--text-3)]" />
                     </div>
                     <span className="text-sm">커버 이미지 추가 (선택)</span>
-                    <span className="text-xs text-[#444444]">클릭하여 URL 입력</span>
+                    <span className="text-xs text-[var(--text-3)]">클릭하여 URL 입력</span>
                   </div>
                 )}
               </div>
@@ -171,49 +173,30 @@ export function EventCreateForm() {
               label="이벤트 제목 *"
               placeholder="예: 소란 단독공연 — 봄의 끝에서"
               error={form.formState.errors.title?.message}
-              className="bg-[#111111] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
               {...form.register('title')}
             />
 
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-white">이벤트 소개 *</label>
+              <label className="text-sm font-medium text-[var(--text-1)]">이벤트 소개 *</label>
               <textarea
-                placeholder="이벤트에 대해 소개해주세요. 공연 정보, 주의사항 등을 자유롭게 작성하세요."
+                placeholder="이벤트에 대해 소개해주세요."
                 className={cn(
-                  'w-full min-h-[160px] rounded-lg border border-[#1e1e1e] bg-[#111111] px-3 py-2.5 text-sm text-white',
-                  'placeholder:text-[#444444] resize-none',
-                  'focus:outline-none focus:border-[#5A42F5] transition-colors',
+                  'w-full min-h-[160px] rounded-lg border border-[var(--border-1)] bg-[var(--bg-2)] px-3 py-2.5 text-sm text-[var(--text-1)]',
+                  'placeholder:text-[var(--text-3)] resize-none',
+                  'focus:outline-none focus:border-[var(--accent)] transition-colors',
                   form.formState.errors.description && 'border-red-500'
                 )}
                 {...form.register('description')}
               />
               {form.formState.errors.description && (
-                <p className="text-xs text-red-400">{form.formState.errors.description.message}</p>
+                <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
               )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Input
-                label="날짜 *"
-                type="date"
-                error={form.formState.errors.date?.message}
-                className="bg-[#111111] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
-                {...form.register('date')}
-              />
-              <Input
-                label="시작 시간 *"
-                type="time"
-                error={form.formState.errors.time?.message}
-                className="bg-[#111111] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
-                {...form.register('time')}
-              />
-              <Input
-                label="종료 시간"
-                type="time"
-                hint="선택 사항"
-                className="bg-[#111111] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
-                {...form.register('end_time')}
-              />
+              <Input label="날짜 *" type="date" error={form.formState.errors.date?.message} {...form.register('date')} />
+              <Input label="시작 시간 *" type="time" error={form.formState.errors.time?.message} {...form.register('time')} />
+              <Input label="종료 시간" type="time" hint="선택 사항" {...form.register('end_time')} />
             </div>
 
             <Select
@@ -229,22 +212,10 @@ export function EventCreateForm() {
 
       {/* Step 2: Venue */}
       {step === 2 && (
-        <div className="rounded-xl border border-[#1e1e1e] bg-[#161616]">
+        <div className="rounded-xl border border-[var(--border-1)] bg-[var(--bg-3)]">
           <div className="p-6 space-y-6">
-            <Input
-              label="장소명 *"
-              placeholder="예: 클럽 빵, 카페 온더레코드"
-              error={form.formState.errors.venue?.message}
-              className="bg-[#111111] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
-              {...form.register('venue')}
-            />
-            <Input
-              label="상세 주소 *"
-              placeholder="예: 서울 마포구 어울마당로 162"
-              error={form.formState.errors.address?.message}
-              className="bg-[#111111] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
-              {...form.register('address')}
-            />
+            <Input label="장소명 *" placeholder="예: 클럽 빵, 카페 온더레코드" error={form.formState.errors.venue?.message} {...form.register('venue')} />
+            <Input label="상세 주소 *" placeholder="예: 서울 마포구 어울마당로 162" error={form.formState.errors.address?.message} {...form.register('address')} />
             <Select
               label="지역 *"
               placeholder="지역 선택"
@@ -252,10 +223,9 @@ export function EventCreateForm() {
               error={form.formState.errors.location?.message}
               {...form.register('location')}
             />
-
-            <div className="rounded-lg bg-[#111111] border border-[#1e1e1e] p-4 text-sm">
-              <p className="font-medium text-white mb-1">카카오맵 연동</p>
-              <p className="text-[#888888] text-xs leading-relaxed">
+            <div className="rounded-lg bg-[var(--bg-2)] border border-[var(--border-1)] p-4 text-sm">
+              <p className="font-medium text-[var(--text-1)] mb-1">카카오맵 연동</p>
+              <p className="text-[var(--text-2)] text-xs leading-relaxed">
                 주소를 입력하면 이벤트 페이지에 카카오맵이 자동으로 표시됩니다.
               </p>
             </div>
@@ -267,16 +237,12 @@ export function EventCreateForm() {
       {step === 3 && (
         <div className="space-y-4">
           {fields.map((field, index) => (
-            <div key={field.id} className="rounded-xl border border-[#1e1e1e] bg-[#161616]">
+            <div key={field.id} className="rounded-xl border border-[var(--border-1)] bg-[var(--bg-3)]">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="font-semibold text-sm text-white">티켓 {index + 1}</h3>
+                  <h3 className="font-semibold text-sm text-[var(--text-1)]">티켓 {index + 1}</h3>
                   {fields.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="text-[#444444] hover:text-red-400 transition-colors"
-                    >
+                    <button type="button" onClick={() => remove(index)} className="text-[var(--text-3)] hover:text-red-500 transition-colors">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   )}
@@ -286,38 +252,27 @@ export function EventCreateForm() {
                     label="티켓 이름 *"
                     placeholder="예: 사전예매, 현장예매, VIP"
                     error={form.formState.errors.ticket_types?.[index]?.name?.message}
-                    className="bg-[#111111] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
                     {...form.register(`ticket_types.${index}.name`)}
                   />
-                  <Input
-                    label="설명"
-                    placeholder="예: 선착순 20매 할인 티켓"
-                    className="bg-[#111111] border-[#1e1e1e] focus:border-[#5A42F5] focus:ring-0"
-                    {...form.register(`ticket_types.${index}.description`)}
-                  />
+                  <Input label="설명" placeholder="예: 선착순 20매 할인 티켓" {...form.register(`ticket_types.${index}.description`)} />
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-white">가격 (원) *</label>
+                      <label className="text-sm font-medium text-[var(--text-1)]">가격 (원) *</label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#888888]">₩</span>
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--text-2)]">₩</span>
                         <input
-                          type="number"
-                          min="0"
-                          step="1000"
-                          placeholder="0"
-                          className="w-full h-10 pl-7 pr-3 rounded-lg border border-[#1e1e1e] bg-[#111111] text-sm text-white focus:outline-none focus:border-[#5A42F5] transition-colors placeholder:text-[#444444]"
+                          type="number" min="0" step="1000" placeholder="0"
+                          className="w-full h-11 pl-7 pr-3 rounded-lg border border-[var(--border-1)] bg-[var(--bg-2)] text-sm text-[var(--text-1)] focus:outline-none focus:border-[var(--accent)] transition-colors placeholder:text-[var(--text-3)]"
                           {...form.register(`ticket_types.${index}.price`, { valueAsNumber: true })}
                         />
                       </div>
-                      <p className="text-xs text-[#444444]">0원 = 무료 행사</p>
+                      <p className="text-xs text-[var(--text-3)]">0원 = 무료 행사</p>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-sm font-medium text-white">수량 *</label>
+                      <label className="text-sm font-medium text-[var(--text-1)]">수량 *</label>
                       <input
-                        type="number"
-                        min="1"
-                        placeholder="100"
-                        className="w-full h-10 px-3 rounded-lg border border-[#1e1e1e] bg-[#111111] text-sm text-white focus:outline-none focus:border-[#5A42F5] transition-colors placeholder:text-[#444444]"
+                        type="number" min="1" placeholder="100"
+                        className="w-full h-11 px-3 rounded-lg border border-[var(--border-1)] bg-[var(--bg-2)] text-sm text-[var(--text-1)] focus:outline-none focus:border-[var(--accent)] transition-colors placeholder:text-[var(--text-3)]"
                         {...form.register(`ticket_types.${index}.quantity`, { valueAsNumber: true })}
                       />
                     </div>
@@ -330,18 +285,17 @@ export function EventCreateForm() {
           <button
             type="button"
             onClick={() => append({ name: '', description: '', price: 0, quantity: 50 })}
-            className="w-full h-11 rounded-xl border border-dashed border-[#1e1e1e] text-sm text-[#888888] hover:border-[#5A42F5] hover:text-[#5A42F5] transition-colors flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-xl border border-dashed border-[var(--border-1)] text-sm text-[var(--text-2)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors flex items-center justify-center gap-2"
           >
             <Plus className="h-4 w-4" />
             티켓 타입 추가
           </button>
 
-          <div className="rounded-lg border border-[#1e1e1e] bg-[#161616] p-4 text-sm">
-            <p className="font-medium text-white mb-1">수수료 안내</p>
-            <p className="text-[#888888] text-xs leading-relaxed">
+          <div className="rounded-lg border border-[var(--border-1)] bg-[var(--bg-3)] p-4 text-sm">
+            <p className="font-medium text-[var(--text-1)] mb-1">수수료 안내</p>
+            <p className="text-[var(--text-2)] text-xs leading-relaxed">
               유료 티켓의 경우 판매 금액의{' '}
-              <strong className="text-white font-semibold">3%</strong>가 서비스 수수료로 공제됩니다.
-              무료 이벤트는 수수료가 없습니다.
+              <strong className="text-[var(--text-1)] font-semibold">3%</strong>가 서비스 수수료로 공제됩니다.
             </p>
           </div>
         </div>
@@ -357,7 +311,6 @@ export function EventCreateForm() {
         ) : (
           <div />
         )}
-
         {step < STEPS.length ? (
           <Button type="button" onClick={nextStep}>
             다음
@@ -365,16 +318,8 @@ export function EventCreateForm() {
           </Button>
         ) : (
           <div className="flex items-center gap-3">
-            <Button
-              type="submit"
-              variant="outline"
-              loading={isSubmitting}
-            >
-              임시저장
-            </Button>
-            <Button type="submit" loading={isSubmitting}>
-              이벤트 발행하기
-            </Button>
+            <Button type="submit" variant="outline" loading={isSubmitting}>임시저장</Button>
+            <Button type="submit" loading={isSubmitting}>이벤트 발행하기</Button>
           </div>
         )}
       </div>
